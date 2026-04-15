@@ -22,3 +22,4 @@ class SearchState(BaseModel):
     export_format: Optional[str] = None
     trace_url: Optional[str] = None
     error: Optional[str] = None
+    formatted_output: Optional[str] = None  # Markdown 格式化输出

@@ -1,5 +1,5 @@
 from src.agent.state import SearchState
-from src.tools.semantic_scholar import SemanticScholarClient
+from src.tools.unified_search import UnifiedSearchClient
 
 def execute_search(state: SearchState) -> dict:
     """
@@ -10,7 +10,7 @@ def execute_search(state: SearchState) -> dict:
     year_from = query_data.get("year_from")
     sort_by = query_data.get("sort_by", state.sort_by)
 
-    client = SemanticScholarClient()
+    client = UnifiedSearchClient()
     papers = client.search(
         query=query,
         year_filter=year_from or state.year_filter,
@@ -19,7 +19,7 @@ def execute_search(state: SearchState) -> dict:
 
     # 按排序方式排序
     if sort_by == "citation_count":
-        papers.sort(key=lambda p: p.citation_count, reverse=True)
+        papers.sort(key=lambda p: p.citation_count if p.citation_count else 0, reverse=True)
     elif sort_by == "year":
         papers.sort(key=lambda p: p.year, reverse=True)
 

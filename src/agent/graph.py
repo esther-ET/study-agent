@@ -11,20 +11,25 @@ def should_continue(state: SearchState) -> str:
         return "no_results"
     return "format"
 
+def format_node(state: SearchState) -> dict:
+    """格式化节点"""
+    return {"formatted_output": format_papers_markdown(state.papers)}
+
 def build_graph():
     workflow = StateGraph(SearchState)
 
     # 添加节点
     workflow.add_node("intent_parser", parse_intent)
     workflow.add_node("search_executor", execute_search)
-    workflow.add_node("formatter", lambda state: {"formatted_output": format_papers_markdown(state.papers)})
+    workflow.add_node("formatter", format_node)
 
     # 设置入口
     workflow.set_entry_point("intent_parser")
 
     # 添加边
     workflow.add_edge("intent_parser", "search_executor")
-    workflow.add_edge("search_executor", END)
+    workflow.add_edge("search_executor", "formatter")
+    workflow.add_edge("formatter", END)
 
     return workflow.compile()
 
