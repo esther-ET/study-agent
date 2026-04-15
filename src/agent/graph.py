@@ -2,7 +2,6 @@ from langgraph.graph import StateGraph, END
 from src.agent.state import SearchState
 from src.agent.nodes import parse_intent, execute_search
 from src.tools.formatter import format_papers_markdown
-from src.utils.tracing import langsmith_callback_handler
 
 def should_continue(state: SearchState) -> str:
     """决定是否继续"""
@@ -27,13 +26,7 @@ def build_graph():
     workflow.add_edge("intent_parser", "search_executor")
     workflow.add_edge("search_executor", END)
 
-    # 获取 callbacks
-    callbacks = langsmith_callback_handler()
-    compile_kwargs = {"debug": True}
-    if callbacks:
-        compile_kwargs["callbacks"] = [callbacks]
-
-    return workflow.compile(**compile_kwargs)
+    return workflow.compile()
 
 # 全局 app 实例
 app = build_graph()
