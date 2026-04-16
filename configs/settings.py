@@ -8,6 +8,8 @@ class Settings(BaseSettings):
     langsmith_project: str = "research-agent"
     default_year_limit: int = 5
     default_page_size: int = 10
+    minimax_api_key: str = ""
+    deepseek_api_key: str = ""
 
     class Config:
         env_file = ".env"
