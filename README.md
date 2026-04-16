@@ -79,12 +79,31 @@ study_agent/
 ```
 
 
-## 待做功能
-待完成（计划中但未实现）
-- 论文摘要翻译（中英对照）— 需要集成翻译 API
-- 摘要生成 — 需要集成 LLM
-- Web 界面 — 需要 FastAPI + 前端
-需要我继续实现这些扩展功能吗？
+## 功能
+
+- 语义模糊匹配：输入中文或英文关键词，自动解析搜索意图
+- 年份限制：默认近5年，支持动态指定
+- 排序规则：按时间和期刊分量排序
+- Markdown 输出：标题、年份、摘要、链接
+- 论文搜索：OpenAlex + arXiv 多源搜索
+- 选择论文：`select 1,3` 选择多篇论文
+- 导出功能：BibTeX 和 CSV 格式
+- 摘要翻译：中英互译（基于 MiniMax M2.7 或 DeepSeek）
+- 摘要生成：LLM 生成论文摘要（中文）
+- 全链路追踪：LangSmith 可视化 Agent 推理过程
+
+## LLM 模型配置
+
+默认使用 MiniMax M2.7，切换方式：
+
+```bash
+# 修改 .env 文件
+LLM_PROVIDER=minimax   # 或 deepseek
+```
+
+支持的模型：
+- MiniMax: `minimax-m2.7`
+- DeepSeek: `deepseek-chat`
 
 ## License
 

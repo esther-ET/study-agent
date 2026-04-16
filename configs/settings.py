@@ -8,6 +8,9 @@ class Settings(BaseSettings):
     langsmith_project: str = "research-agent"
     default_year_limit: int = 5
     default_page_size: int = 10
+
+    # LLM 配置
+    llm_provider: str = "minimax"  # "minimax" 或 "deepseek"
     minimax_api_key: str = ""
     deepseek_api_key: str = ""
 
