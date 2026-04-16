@@ -30,6 +30,7 @@ class UnifiedSearchClient:
         limit: int = 10,
         offset: int = 0,
         preferred_source: str = "openalex",
+        sort_by: str = "relevance",
     ) -> list[Paper]:
         """
         搜索论文
@@ -40,6 +41,7 @@ class UnifiedSearchClient:
             limit: 返回数量
             offset: 偏移量
             preferred_source: 优先数据源 "openalex", "arxiv", 或 "both"
+            sort_by: 排序方式 "relevance", "citation_count", "year"
         """
         if preferred_source == "arxiv":
             return self.arxiv.search(query=query, year_filter=year_filter, limit=limit, offset=offset)
@@ -64,8 +66,12 @@ class UnifiedSearchClient:
             # 合并并返回（OpenAlex 结果优先）
             combined = openalex_papers + arxiv_papers
 
-            # 按引用数排序（如果有）
-            combined.sort(key=lambda p: p.citation_count if p.citation_count else 0, reverse=True)
+            # 按指定排序方式排序
+            if sort_by == "citation_count":
+                combined.sort(key=lambda p: p.citation_count if p.citation_count else 0, reverse=True)
+            elif sort_by == "year":
+                combined.sort(key=lambda p: p.year if p.year else 0, reverse=True)
+            # else: relevance 保持 OpenAlex 原生排序，不额外排序
 
             return combined[:limit]
 
@@ -84,6 +90,7 @@ def search_papers(
     year_filter: int = 5,
     limit: int = 10,
     preferred_source: str = "openalex",
+    sort_by: str = "relevance",
 ) -> list[Paper]:
     """搜索论文（便捷函数）"""
     client = UnifiedSearchClient()
@@ -92,4 +99,5 @@ def search_papers(
         year_filter=year_filter,
         limit=limit,
         preferred_source=preferred_source,
+        sort_by=sort_by,
     )

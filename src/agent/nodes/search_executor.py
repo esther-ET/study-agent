@@ -15,12 +15,7 @@ def execute_search(state: SearchState) -> dict:
         query=query,
         year_filter=year_from or state.year_filter,
         limit=10,
+        sort_by=sort_by,
     )
-
-    # 按排序方式排序
-    if sort_by == "citation_count":
-        papers.sort(key=lambda p: p.citation_count if p.citation_count else 0, reverse=True)
-    elif sort_by == "year":
-        papers.sort(key=lambda p: p.year, reverse=True)
 
     return {"papers": papers}
