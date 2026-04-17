@@ -72,7 +72,7 @@ study_agent/
 │   └── utils/
 │       ├── __init__.py
 │       ├── export.py              # BibTeX/CSV 导出
-│       └── tracing.py             # LangSmith 追踪配置
+│       └── tracing.py             # LangChain Tracer 追踪配置
 ├── configs/
 │   └── settings.py                # Pydantic Settings 配置
 ├── tests/                         # 单元测试
