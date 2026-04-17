@@ -3,6 +3,7 @@ import re
 from src.agent.state import SearchState, Paper
 from src.agent.graph import app
 from src.utils.export import export_to_bibtex, export_to_csv
+from src.utils.tracing import langsmith_callback_handler
 from src.tools.llm_client import summarize_paper_chinese
 from rich.console import Console
 from rich.markdown import Markdown
@@ -16,10 +17,11 @@ current_state = {
 }
 
 
-def search_papers(query: str) -> list[Paper]:
+def search_papers(query: str, callbacks=None) -> list[Paper]:
     """执行论文搜索"""
     initial_state = SearchState(user_input=query)
-    result = app.invoke(initial_state)
+    config = {"callbacks": callbacks} if callbacks else {}
+    result = app.invoke(initial_state, config=config)
     return result.get("papers", [])
 
 
@@ -175,6 +177,11 @@ def main():
     console.print("[bold green]Research Agent[/bold green] - 学术论文搜索智能体")
     console.print("输入 `quit` 退出\n")
 
+    # 初始化 LangSmith tracer（如已启用）
+    tracer_handler = langsmith_callback_handler()
+    if tracer_handler:
+        console.print("[dim]LangSmith tracing 已启用[/dim]\n")
+
     while True:
         try:
             user_input = console.input("[bold blue]你:[/bold blue] ").strip()
@@ -190,7 +197,7 @@ def main():
             console.print("\n[yellow]搜索中...[/yellow]\n")
 
             try:
-                papers = search_papers(user_input)
+                papers = search_papers(user_input, callbacks=[tracer_handler] if tracer_handler else None)
                 current_state["papers"] = papers
                 current_state["selected_indices"] = set()
 
